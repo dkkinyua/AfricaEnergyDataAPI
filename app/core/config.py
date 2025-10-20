@@ -1,0 +1,38 @@
+# config.py
+import os
+from dotenv import load_dotenv
+from pydantic import BaseSettings
+
+load_dotenv()
+
+class CommonSettings(BaseSettings):
+    APP_NAME: str = "africaenergyapi"
+    VERSION = 'v1'
+    DEBUG: bool = True
+    DATABASE_URL: str = os.getenv("LOCAL_MONGO_URI")
+    REDIS_URL: str = os.getenv("LOCAL_REDIS_URL", "redis://localhost:6379")
+    API_KEY_TTL_SECONDS: int = 3600*24*30  # optional caching TTL
+    # add other common settings
+
+class DevSettings(CommonSettings):
+    DEBUG: bool = True
+    DATABASE_URL: str = os.getenv("LOCAL_MONGO_URI")
+
+class TestSettings(CommonSettings):
+    DEBUG: bool = False
+    DATABASE_URL: str = os.getenv("LOCAL_MONGO_URI")
+
+class ProdSettings(CommonSettings):
+    DEBUG: bool = False
+    DATABASE_URL: str = os.getenv("PROD_MONGO_URI")
+    REDIS_URL: str = os.getenv("PROD_REDIS_URL")
+
+def get_settings() -> CommonSettings:
+    env = os.getenv("APP_ENV", "dev").lower()
+    if env == "prod":
+        return ProdSettings()
+    if env == "test":
+        return TestSettings()
+    return DevSettings()
+
+settings = get_settings()
