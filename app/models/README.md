@@ -5,7 +5,6 @@ This folder contains all the **data models** used across the Africa Energy API.
 Each model defines the **structure**, **validation**, and **transformation** logic for the data served by the API.  
 They are implemented using **Pydantic**, which provides robust data validation and type safety.
 
----
 
 ###  Purpose of Models
 
@@ -29,7 +28,7 @@ Each model (e.g., `ElectricityData`, `EnergyData`, `SocioEconomicData`) represen
 
 ---
 
-### The `from_db()` Class Method
+### The `from_db()` class method
 
 MongoDB stores data in a flat format, where each year (`2000`, `2001`, `2024`, etc.) appears as a separate field in the document.  
 The `from_db()` method is a **class-level function** that converts these raw documents into clean, structured API responses.
