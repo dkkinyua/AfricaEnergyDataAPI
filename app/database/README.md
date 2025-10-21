@@ -21,7 +21,7 @@ This improves:
 
 - Environment Configuration — The MongoDB URI, `settings.DATABASE_URL` is managed via the central configuration file `core/config.py`.
 
-## ⚙️ How It Works
+### How It Works
 
 ###  Class: `MongoDB`
 
