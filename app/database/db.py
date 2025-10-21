@@ -1,10 +1,17 @@
+import logging
 from core.config import settings
+from datetime import datetime, timezone
 from motor.motor_asyncio import AsyncIOMotorClient
 
 '''
 this file allows for multiple mongodb connections across different routers e.g. electricity etc
 avoids setting up the db each time in the router, while we can call them in different routes.
 '''
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
+)
+logger = logging.getLogger(__name__)
 
 class MongoDB:
     client: AsyncIOMotorClient = None
@@ -17,7 +24,7 @@ class MongoDB:
         """
         cls.client = AsyncIOMotorClient(settings.DATABASE_URL)
         cls.db = cls.client.get_default_database()
-        print(f"Connected to MongoDB: {cls.db.name}")
+        logger.info(f"MongoDB connection opened at {datetime.now(timezone.utc)}")
 
     @classmethod
     async def close(cls):
@@ -26,7 +33,7 @@ class MongoDB:
         """
         if cls.client:
             cls.client.close()
-            print("MongoDB connection closed")
+            logger.info(f"MongoDB connection closed at {datetime.now(timezone.utc)}")
 
     @classmethod
     def get_collection(cls, name: str):
