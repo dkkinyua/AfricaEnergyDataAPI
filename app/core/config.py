@@ -1,4 +1,3 @@
-# config.py
 import os
 from dotenv import load_dotenv
 from pydantic import BaseSettings
@@ -12,7 +11,6 @@ class CommonSettings(BaseSettings):
     DATABASE_URL: str = os.getenv("LOCAL_MONGO_URI")
     REDIS_URL: str = os.getenv("LOCAL_REDIS_URL", "redis://localhost:6379")
     API_KEY_TTL_SECONDS: int = 3600*24*30  # optional caching TTL
-    # add other common settings
 
 class DevSettings(CommonSettings):
     DEBUG: bool = True
