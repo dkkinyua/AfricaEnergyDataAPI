@@ -1,5 +1,5 @@
 import logging
-from core.config import settings
+from app.core.config import settings
 from datetime import datetime, timezone
 from motor.motor_asyncio import AsyncIOMotorClient
 
@@ -40,6 +40,6 @@ class MongoDB:
         """
         retrieves a MongoDB collection by name
         """
-        if not cls.db:
+        if cls.db is None:
             raise ConnectionError("Database connection not initialized. Call connect() first.")
         return cls.db[name]
