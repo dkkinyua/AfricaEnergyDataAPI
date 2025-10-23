@@ -1,12 +1,12 @@
 import os
 from dotenv import load_dotenv
-from pydantic import BaseSettings
+from pydantic_settings import BaseSettings
 
 load_dotenv()
 
 class CommonSettings(BaseSettings):
     APP_NAME: str = "africaenergyapi"
-    VERSION = 'v1'
+    VERSION: str = 'v1'
     DEBUG: bool = True
     DATABASE_URL: str = os.getenv("LOCAL_MONGO_URI")
     REDIS_URL: str = os.getenv("LOCAL_REDIS_URL", "redis://localhost:6379")
