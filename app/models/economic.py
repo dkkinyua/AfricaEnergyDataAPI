@@ -11,7 +11,7 @@ class EconomicModel(BaseModel):
     sub_sub_sector: Optional[str] = None
     source_link: Optional[str] = None
     source: Optional[str] = None
-    data: Optional[Dict[str, float]] = Field(default_factory=dict)
+    data: Optional[Dict[str, Optional[float]]] = Field(default_factory=dict)
 
     class Config:
         from_attributes = True
