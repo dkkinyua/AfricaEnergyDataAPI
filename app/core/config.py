@@ -9,7 +9,7 @@ class CommonSettings(BaseSettings):
     VERSION: str = 'v1'
     DEBUG: bool = True
     DATABASE_URL: str = os.getenv("LOCAL_MONGO_URI")
-    REDIS_URL: str = os.getenv("LOCAL_REDIS_URL", "redis://redis:6379")
+    REDIS_URL: str = os.getenv("REDIS_URL", "redis://redis:6379")
     API_KEY_TTL_SECONDS: int = 3600*24*30  # optional caching TTL
 
 class DevSettings(CommonSettings):
@@ -18,7 +18,7 @@ class DevSettings(CommonSettings):
 
 class TestSettings(CommonSettings):
     DEBUG: bool = False
-    DATABASE_URL: str = os.getenv("LOCAL_MONGO_URI")
+    DATABASE_URL: str = os.getenv("PROD_MONGO_URI")
 
 class ProdSettings(CommonSettings):
     DEBUG: bool = False
