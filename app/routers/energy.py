@@ -3,6 +3,7 @@ from fastapi import APIRouter, Query, HTTPException
 from app.database.db import MongoDB
 from app.models.energy import EnergyModel
 from app.utils.alert import logger
+from app.utils.clear import sanitize_floats
 from app.utils.query import build_query
 
 router = APIRouter()
@@ -45,6 +46,9 @@ async def get_energy_data(
             end = end_year or 2024
             for y in range(start, end + 1):
                 projection[str(y)] = 1
+        else:
+            for y in range(2000, 2022+1):
+                projection[str(y)] = 1
 
         cursor = collection.find(query, projection).skip(skip).limit(limit)
         if sort_by:
@@ -52,7 +56,8 @@ async def get_energy_data(
 
         results = []
         async for doc in cursor:
-            results.append(EnergyModel.from_db(doc))
+            clean_doc = sanitize_floats(doc)
+            results.append(EnergyModel.from_db(clean_doc))
 
         if not results:
             raise HTTPException(status_code=404, detail="No records found for given filters")
