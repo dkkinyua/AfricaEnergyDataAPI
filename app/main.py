@@ -38,6 +38,13 @@ app.add_middleware(RapidAPIKeyMiddleware)
 @app.get("/api/v1/test")
 def validate_api():
     try:
-        return {"Message": "API Key OK"}
+        return {"detail": "API Key OK"}
     except Exception as e:
-        return {"Error": "Invalid or missing API Keys"}
+        return {"detail": "Invalid or missing API Keys"}
+
+@app.get("/api/v1/health")
+def get_health():
+    try:
+        return {"detail": "API Health OK"}
+    except Exception as e:
+        return {"detail": f"Error: {e}"}
