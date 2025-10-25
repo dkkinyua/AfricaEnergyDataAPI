@@ -32,7 +32,7 @@ async def init_redis():
     global redis_client
     try:
         redis_client = redis.from_url(
-            os.getenv("REDIS_URL", "redis://localhost:6379"),
+            os.getenv("REDIS_URL", "redis://redis:6379"),
             encoding="utf-8",
             decode_responses=True
         )
@@ -92,7 +92,8 @@ class RapidAPIKeyMiddleware(BaseHTTPMiddleware):
         # returns server error responses
         except Exception as e:
             logger(f"Middleware error: {e}")
-            return self._error_response(500, e.detail)
+            detail = getattr(e, "detail", str(e))
+            return self._error_response(500, detail)
 
     def _error_response(self, status_code: int, message: str):
         return JSONResponse(
