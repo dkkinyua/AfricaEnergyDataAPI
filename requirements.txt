@@ -2,7 +2,6 @@ aiocache==0.12.3
 annotated-types==0.7.0
 anyio==4.11.0
 async-timeout==5.0.1
-backports.asyncio.runner==1.2.0
 certifi==2025.10.5
 charset-normalizer==3.4.4
 click==8.3.0
