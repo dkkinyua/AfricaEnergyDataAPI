@@ -35,7 +35,7 @@ app.include_router(energy.router, prefix="/api/v1/energy", tags=["Energy"])
 # add middleware and test route
 app.add_middleware(RapidAPIKeyMiddleware)
 
-@app.get("/api/v1/health")
+@app.get("/api/v1/health", include_in_schema=False)
 def get_health():
     try:
         return {"detail": "API Health OK"}
