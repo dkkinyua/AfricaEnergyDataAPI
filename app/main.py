@@ -35,13 +35,6 @@ app.include_router(energy.router, prefix="/api/v1/energy", tags=["Energy"])
 # add middleware and test route
 app.add_middleware(RapidAPIKeyMiddleware)
 
-@app.get("/api/v1/test")
-def validate_api():
-    try:
-        return {"detail": "API Key OK"}
-    except Exception as e:
-        return {"detail": "Invalid or missing API Keys"}
-
 @app.get("/api/v1/health")
 def get_health():
     try:
