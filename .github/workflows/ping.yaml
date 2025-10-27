@@ -1,0 +1,16 @@
+name: Ping Render API Server 
+
+on:
+  schedule:
+    - cron: "* * * * *"  # Runs every minute
+  workflow_dispatch:     # Allows manual trigger from GitHub
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Ping Render server
+        run: |
+          echo "Pinging Render app..."
+          curl -I https://africa-energy-api.onrender.com/api/v1/health -H "x-rapidapi-key: demokeyhere"
