@@ -1,3 +1,4 @@
+import certifi
 import logging
 from app.core.config import settings
 from datetime import datetime, timezone
@@ -22,7 +23,15 @@ class MongoDB:
         """
         initializes the MongoDB connection
         """
-        cls.client = AsyncIOMotorClient(settings.DATABASE_URL)
+        cls.client = AsyncIOMotorClient(
+            settings.DATABASE_URL,
+            tlsCAFile=certifi.where(),
+            serverSelectionTimeoutMS=30000,
+            connectTimeoutMS=20000,
+            socketTimeoutMS=20000, 
+            retryWrites=True,
+            w='majority'
+            )
         cls.db = cls.client.get_default_database()
         logger.info(f"MongoDB connection opened at {datetime.now(timezone.utc)}")
 
