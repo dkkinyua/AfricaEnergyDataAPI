@@ -2,7 +2,7 @@ name: Ping Render API Server
 
 on:
   schedule:
-    - cron: "* * * * *"  # Runs every minute
+    - cron: "*/5 * * * *"  # Runs every minute
   workflow_dispatch:     # Allows manual trigger from GitHub
 
 jobs:
