@@ -9,6 +9,8 @@ __pycache__/
 # avoid these files/folders
 .env
 myenv
+.pytest_cache
+
 
 # Distribution / packaging
 .Python

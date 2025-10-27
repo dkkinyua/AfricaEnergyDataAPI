@@ -1,17 +1,22 @@
 services:
+  # Redis service (to only be used in dev
   redis:
     image: redis:7.4
-    container_name: api_db
-    restart: always
+    container_name: redis_db
+    restart: unless-stopped
     ports:
       - "6379:6379"
     volumes:
       - redis_data:/data
+    # Only run Redis locally; skip in prod
+    deploy:
+      replicas: ${REDIS_REPLICAS:-1}
 
   api:
     build: .
     container_name: energyapi
-    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    command: >
+      sh -c "uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
     volumes:
       - .:/app
     ports:
@@ -20,6 +25,10 @@ services:
       - .env
     depends_on:
       - redis
+    environment:
+      # default to dev if not set
+      - APP_ENV=${APP_ENV:-dev}
+    restart: unless-stopped
 
 volumes:
   redis_data:

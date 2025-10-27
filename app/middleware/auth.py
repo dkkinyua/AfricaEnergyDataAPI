@@ -6,14 +6,18 @@ from fastapi import Request, HTTPException
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.responses import JSONResponse
 from typing import Optional
+from upstash_redis.asyncio import Redis
 
 load_dotenv()
 
 # cache duration
 CACHE_TTL = 3600  
 
+APP_ENV = os.getenv("APP_ENV")
 DEMO_KEY_1 = os.getenv("DEMO_KEY_1")
 DEMO_KEY_2 = os.getenv("DEMO_KEY_2")
+UPSTASH_REDIS_REST_URL = os.getenv("UPSTASH_REDIS_REST_URL")
+UPSTASH_REDIS_REST_TOKEN = os.getenv("UPSTASH_REDIS_REST_TOKEN")
 
 # Fallback valid keys
 VALID_KEYS = {
@@ -23,19 +27,25 @@ VALID_KEYS = {
     DEMO_KEY_2,
 }
 
-redis_client: Optional[redis.Redis] = None
+redis_client: Optional[Redis] = None
 
 async def init_redis():
     """
-    Initialize Redis connection once during FastAPI startup.
+    initialize redis connection once during FastAPI startup.
     """
     global redis_client
     try:
-        redis_client = redis.from_url(
-            os.getenv("REDIS_URL", "redis://redis:6379"),
-            encoding="utf-8",
-            decode_responses=True
-        )
+        if APP_ENV == 'prod':
+            redis_client = Redis(
+                url=UPSTASH_REDIS_REST_URL,
+                token=UPSTASH_REDIS_REST_TOKEN
+            )
+        else:
+            redis_client = redis.from_url(
+                os.getenv("REDIS_URL", "redis://redis:6379"),
+                encoding="utf-8",
+                decode_responses=True
+            )
         logger("Redis connected successfully.")
     except Exception as e:
         logger(f"Redis connection failed: {e}")
