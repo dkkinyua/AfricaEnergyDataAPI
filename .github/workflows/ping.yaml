@@ -2,7 +2,7 @@ name: Ping Render API Server
 
 on:
   schedule:
-    - cron: "* * * * *"  # Runs every minute
+    - cron: "*/5 * * * *"  # Runs every minute
   workflow_dispatch:     # Allows manual trigger from GitHub
 
 jobs:
@@ -13,4 +13,4 @@ jobs:
       - name: Ping Render server
         run: |
           echo "Pinging Render app..."
-          curl -I https://africa-energy-api.onrender.com/api/v1/health -H "x-rapidapi-key: demokeyhere"
+          curl -I https://africa-energy-api.onrender.com/api/v1/health -H "x-rapidapi-key: ${{ secrets.RAPIDAPI_KEY }}"
