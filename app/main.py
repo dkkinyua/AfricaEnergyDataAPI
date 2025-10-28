@@ -2,7 +2,7 @@ from app.core.config import settings
 from app.database.db import MongoDB
 from contextlib import asynccontextmanager
 from fastapi import FastAPI
-from app.middleware.auth import RapidAPIKeyMiddleware, init_redis, redis_client
+from app.middleware.auth import RapidAPIKeyMiddleware
 from app.routers import electricity, economic, energy
 from app.utils.alert import logger
 
@@ -10,15 +10,9 @@ from app.utils.alert import logger
 async def lifespan(app: FastAPI):
     # start the database
     await MongoDB.connect()
-    await init_redis()
-
     yield # the database stays on as long as the app is alive
 
     await MongoDB.close()
-    if redis_client:
-        await redis_client.close()
-        logger("Redis connection closed successfully!")
-
 
 app = FastAPI(
     lifespan = lifespan,
