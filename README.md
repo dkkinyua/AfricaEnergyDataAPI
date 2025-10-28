@@ -226,7 +226,7 @@ public class Main {
 
 ## Contributions
 
-Contributions are welcome! Whether it’s fixing a bug, improving documentation, or adding new features, your help is appreciated.
+Contributions are welcome! Whether it’s fixing a bug, improving documentation, or adding new features and tests, your help is appreciated.
 
 ### How to Contribute
 
