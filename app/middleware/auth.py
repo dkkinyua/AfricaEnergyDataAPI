@@ -86,6 +86,9 @@ class RapidAPIKeyMiddleware(BaseHTTPMiddleware):
                 or request.headers.get("x-api-key")
             )
 
+            if request.url.path == '/api/v1/health':
+                return await call_next(request)
+
             if not api_key:
                 raise HTTPException(status_code=401, detail="Missing API key")
 
