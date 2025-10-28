@@ -14,11 +14,11 @@ class RapidAPIKeyMiddleware(BaseHTTPMiddleware):
             api_key = request.headers.get("X-RapidAPI-Key")
             proxy_secret = request.headers.get("X-RapidAPI-Proxy-Secret")
 
-            # Ensure request came through RapidAPI gateway
+            # checks if the requests came from rapidapi
             if not api_key or not proxy_secret:
                 raise HTTPException(
                     status_code=403,
-                    detail="Access restricted to RapidAPI subscribers only."
+                    detail="Access restricted to RapidAPI subscribers only. Please subscribe to a plan to access this endpoint"
                 )
 
             response = await call_next(request)
