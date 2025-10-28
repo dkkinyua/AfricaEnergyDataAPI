@@ -6,13 +6,12 @@ from app.utils.alert import logger
 class RapidAPIKeyMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         try:
-            # Skip health check route entirely
+            # skip auth health check route entirely
             if request.url.path == '/api/v1/health':
                 return await call_next(request)
 
-            # Extract RapidAPI headers
-            api_key = request.headers.get("X-RapidAPI-Key")
-            proxy_secret = request.headers.get("X-RapidAPI-Proxy-Secret")
+            api_key = request.headers.get("x-rapidapi-key")
+            proxy_secret = request.headers.get("x-rapidapi-proxy-secret")
 
             # checks if the requests came from rapidapi
             if not api_key or not proxy_secret:
