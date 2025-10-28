@@ -6,28 +6,34 @@ from app.utils.alert import logger
 class RapidAPIKeyMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request: Request, call_next):
         try:
-            # skip auth health check route entirely
+            # allow health check without headers
             if request.url.path == '/api/v1/health':
                 return await call_next(request)
 
-            api_key = request.headers.get("x-rapidapi-key")
-            proxy_secret = request.headers.get("x-rapidapi-proxy-secret")
+            # accept either header combination (for proxy or playground)
+            api_key = request.headers.get("X-RapidAPI-Key") or request.headers.get("x-rapidapi-key")
+            proxy_secret = request.headers.get("X-RapidAPI-Proxy-Secret")
 
-            # checks if the requests came from rapidapi
-            if not api_key or not proxy_secret:
-                raise HTTPException(
-                    status_code=403,
-                    detail="Access restricted to RapidAPI subscribers only. Please subscribe to a plan to access this endpoint"
-                )
+            if proxy_secret and api_key:
+                response = await call_next(request)
+                response.headers["X-Auth-Status"] = "Verified via RapidAPI"
+                return response
 
-            response = await call_next(request)
-            response.headers["X-Auth-Status"] = "Verified via RapidAPI"
-            return response
+            if api_key:
+                response = await call_next(request)
+                response.headers["X-Auth-Status"] = "Verified via RapidAPI Playground"
+                return response
+
+            # block unauthorized requests
+            raise HTTPException(
+                status_code=403,
+                detail="Access restricted to RapidAPI subscribers only. Please subscribe to a plan to access this endpoint"
+            )
 
         except HTTPException as e:
             return self._error_response(e.status_code, e.detail)
         except Exception as e:
-            logger(f"Middleware error: {e}")
+            print(f"Middleware error: {e}")
             return self._error_response(500, "Internal server error")
 
     def _error_response(self, status_code: int, message: str):
