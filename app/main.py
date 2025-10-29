@@ -1,7 +1,7 @@
 from app.core.config import settings
 from app.database.db import MongoDB
 from contextlib import asynccontextmanager
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from app.middleware.auth import RapidAPIKeyMiddleware
 from app.routers import electricity, economic, energy
 from app.utils.alert import logger
@@ -35,3 +35,16 @@ def get_health():
         return {"detail": "API Health OK"}
     except Exception as e:
         return {"detail": f"Error: {e}"}
+
+# test endpoint.
+@app.get("/api/v1/debug/headers")
+async def debug_health(request: Request):
+    try:
+        return {
+            'headers': dict(request.headers),
+            "client": request.client.host if request.client else None,
+            "url": str(request.url),
+            "method": request.method 
+        }
+    except Exception as e:
+        return {"detail": f"error fetching headers: {e}"}
