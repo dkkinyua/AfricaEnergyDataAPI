@@ -14,15 +14,15 @@ class RapidAPIKeyMiddleware(BaseHTTPMiddleware):
 
             # in dev: bypass auth and log everything
             if settings.is_development:
-                logger.info("=" * 60)
-                logger.info(f"[{settings.APP_ENV}] Request to: {request.url.path}")
-                logger.info(f"Method: {request.method}")
-                logger.info("Request Headers:")
+                logger("=" * 60)
+                logger(f"[{settings.APP_ENV}] Request to: {request.url.path}")
+                logger(f"Method: {request.method}")
+                logger("Request Headers:")
                 for key, value in request.headers.items():
                     display_value = value if 'key' not in key.lower() and 'secret' not in key.lower() else f"{value[:8]}..."
-                    logger.info(f"  {key}: {display_value}")
-                logger.info("=" * 60)
-                logger.info(f"{settings.APP_ENV.upper()} MODE - Auth bypassed")
+                    logger(f"  {key}: {display_value}")
+                logger("=" * 60)
+                logger(f"{settings.APP_ENV.upper()} MODE - Auth bypassed")
                 
                 response = await call_next(request)
                 response.headers["X-Auth-Status"] = "Development Mode"
@@ -32,7 +32,7 @@ class RapidAPIKeyMiddleware(BaseHTTPMiddleware):
             # in prod: always trust RapidAPI's proxy layer
             # rapidAPI validates subscriptions before forwarding requests to your API
             # this works for both playground testing and production API calls
-            logger.info(f"Request accepted - authenticated via RapidAPI proxy layer")
+            logger(f"Request accepted - authenticated via RapidAPI proxy layer")
             
             response = await call_next(request)
             response.headers["X-Auth-Status"] = "Verified via RapidAPI"
@@ -43,7 +43,7 @@ class RapidAPIKeyMiddleware(BaseHTTPMiddleware):
         except HTTPException as e:
             return self._error_response(e.status_code, e.detail)
         except Exception as e:
-            logger.error(f"Middleware error: {str(e)}")
+            logger(f"Middleware error: {str(e)}")
             return self._error_response(500, "Internal server error")
 
     def _error_response(self, status_code: int, message: str):
